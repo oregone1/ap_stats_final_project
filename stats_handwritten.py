@@ -3,45 +3,50 @@
         [
             [
                 (lambda x, t: (
-                    p.subplots(),
-                    print(sorted(x), t),
-                    p.scatter(x, [x.count(x[i]) for i in range(len(x))], s=5),
+                    ax:=p.subplots(figsize=(5.1, 2.3)),
+                    print(sorted(x[:-2]), t),
+                    ax[1].scatter(x[:-2], [x[:-2].count(x[:-2][i]) for i in range(len(x[:-2]))], s=5),
                     [
-                        p.plot([
-                            x[b]-.33, 
-                            x[b]+.33, 
-                            x[b]+.33, 
-                            x[b]-.33,
-                            x[b]-.33
+                        ax[1].plot([
+                            x[:-2][b]-.33, 
+                            x[:-2][b]+.33, 
+                            x[:-2][b]+.33, 
+                            x[:-2][b]-.33,
+                            x[:-2][b]-.33
                         ], [
                             0, 
                             0,
-                            x.count(x[b]), 
-                            x.count(x[b]), 
+                            x[:-2].count(x[:-2][b]), 
+                            x[:-2].count(x[:-2][b]), 
                             0
-                        ], 'k-') for b in range(len(x))
+                        ], 'k-') for b in range(len(x[:-2]))
                     ],
                     [
-                        p.fill_between([
-                            x[b]-.33, 
-                            x[b]+.33, 
-                            x[b]+.33, 
-                            x[b]-.33,
-                            x[b]-.33
+                        ax[1].fill_between([
+                            x[:-2][b]-.33, 
+                            x[:-2][b]+.33, 
+                            x[:-2][b]+.33, 
+                            x[:-2][b]-.33,
+                            x[:-2][b]-.33
                         ], [
                             0, 
                             0, 
-                            x.count(x[b]), 
-                            x.count(x[b]), 
+                            x[:-2].count(x[:-2][b]), 
+                            x[:-2].count(x[:-2][b]), 
                             0
-                        ], alpha=.5, color='orange') for b in range(len(x))
+                        ], alpha=.5, color='orange') for b in range(len(x[:-2]))
                     ],
+                    ax[1].set_aspect(1/2.5),
+                    ax[1].text(0.05, 0.95, f"Mean: {x[-2]:.2f}", color='blue', ha='left', va='top', transform=p.gca().transAxes),
+                    ax[1].text(0.05, 0.85, f"Median: {sorted(x[:-2])[len(x[:-2])//2] if len(x[:-2]) % 2 != 0 else sum(sorted(x[:-2])[len(x[:-2])//2-1:len(x[:-2])//2+1])/2:.2f}", color='red', ha='left', va='top', transform=p.gca().transAxes),
+                    ax[1].text(0.05, 0.75, f"Std Dev: {x[-1]:.2f}", color='green', ha='left', va='top', transform=p.gca().transAxes),
+                    p.subplots_adjust(left=.15, right=.95, bottom=.2, top=.9),
                     p.xlabel('Value'),
-                    p.ylabel('Density'),
+                    p.ylabel('Frequency'),
+                    p.ylim(0, max(x)+1),
                     p.title(f'{t} - Score Density Plot'),
-                    p.grid(True),
                     p.savefig(f'figs/{t}_Density')
-                ))(t[1][:-2], t[0])
+                ))(t[1], t[0])
                 for t in l
             ],
             p.pause(50)
@@ -57,7 +62,7 @@
                         ) else 'blue'
                         for title, values in d.items()
                     ],
-                    p.subplots(),
+                    p.subplots(figsize=(10, 8)),
                     [
                         p.boxplot(
                             values,

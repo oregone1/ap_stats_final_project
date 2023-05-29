@@ -115,7 +115,12 @@
                         }).values.T
                     )
                 )
-            ))({t[0]: t[1][:-2]for t in l})
+            ))({t[0]: list(
+                map(
+                    lambda x: x if x != 0 else t[1][-2], 
+                    t[1][:-2]
+                )
+            ) for t in l})
         ] if '-m' in s else None,
         [ 
             print("Useage:"),
